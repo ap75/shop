@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, request, render_template, flash
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_login import login_user, logout_user, current_user
+from werkzeug.security import generate_password_hash
 
 from config import Config
 from extensions import db, login_manager
@@ -42,7 +43,7 @@ def register():
     form = RegistrationForm()
 
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        hashed_password = generate_password_hash(form.password.data)
         user = User(username=form.username.data, password=hashed_password)
 
         db.session.add(user)
@@ -50,7 +51,7 @@ def register():
 
         flash('Регистрация прошла успешно!', 'success')
         login_user(user)
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('admin.index'))
 
     return render_template('register.html', form=form)
 
@@ -64,7 +65,7 @@ def login():
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             flash('Успішний вхід!', 'success')
-            return redirect(url_for('admin'))
+            return redirect(url_for('admin.index'))
 
         flash('Невірний логін або пароль', 'danger')
 
