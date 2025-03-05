@@ -5,6 +5,7 @@ from flask_login import login_user, logout_user, current_user
 
 from config import Config
 from extensions import db, login_manager
+from forms import RegistrationForm, LoginForm
 from models import Category, Product, User
 
 
@@ -35,22 +36,39 @@ admin.add_view(AdminModelView(Category, db.session))
 admin.add_view(AdminModelView(Product, db.session))
 admin.add_view(AdminModelView(User, db.session))
 
-# Сторінка входу
-@app.route("/login", methods=["GET", "POST"])
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        user = User(username=form.username.data, password=hashed_password)
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Регистрация прошла успешно!', 'success')
+        login_user(user)
+        return redirect(url_for('dashboard'))
+
+    return render_template('register.html', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+    form = LoginForm()
 
-        user = User.query.filter_by(username=username).first()
-        if user and user.password == password:  # Тут треба додати хешування
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and check_password_hash(user.password, form.password.data):
             login_user(user)
-            return redirect(url_for("admin.index"))
+            flash('Успішний вхід!', 'success')
+            return redirect(url_for('admin'))
 
-        flash("Неправильний логін або пароль")
+        flash('Невірний логін або пароль', 'danger')
 
-    return render_template("login.html")
-
+    return render_template('login.html', form=form)
 
 # Сторінка виходу
 @app.route("/logout")
