@@ -4,6 +4,7 @@ from flask_admin.contrib.sqla import ModelView
 
 from config import Config
 from extensions import db, login_manager
+from models import Category, Product, User
 
 
 # Створення Flask-додатку
@@ -14,8 +15,10 @@ app.config.from_object(Config)
 db.init_app(app)
 login_manager.init_app(app)
 
-# Імпортуємо моделі після ініціалізації db
-from models import Category, Product
+# Функція завантаження користувача
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # Створення таблиць, якщо їх ще немає
 with app.app_context():
@@ -32,6 +35,7 @@ admin = Admin(app, name="Адмінка магазину", template_mode="bootst
 # Додаємо моделі до адмін-панелі
 admin.add_view(ModelView(Category, db.session))
 admin.add_view(ModelView(Product, db.session))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
