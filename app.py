@@ -1,16 +1,18 @@
 from flask import Flask
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
-from flask_sqlalchemy import SQLAlchemy
+
 from config import Config
+from extensions import db, login_manager
 
 
 # Створення Flask-додатку
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Ініціалізація SQLAlchemy з додатком
-db = SQLAlchemy(app)
+# Ініціалізація розширень
+db.init_app(app)
+login_manager.init_app(app)
 
 # Імпортуємо моделі після ініціалізації db
 from models import Category, Product

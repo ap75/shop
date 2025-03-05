@@ -1,6 +1,8 @@
-from app import db
+from extensions import db
+from flask_login import UserMixin
 
 
+# Модель категорії товарів
 class Category(db.Model):
     __tablename__ = 'categories'
 
@@ -12,6 +14,7 @@ class Category(db.Model):
         return f"<Category {self.name}>"
 
 
+# Модель товару
 class Product(db.Model):
     __tablename__ = 'products'
 
@@ -24,3 +27,13 @@ class Product(db.Model):
 
     def __repr__(self):
         return f"<Product {self.name}>"
+
+
+# Модель користувача для авторизації
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(256), nullable=False)  # Тут має бути хеш пароля
+
+    def __repr__(self):
+        return f"<User {self.username}>"
