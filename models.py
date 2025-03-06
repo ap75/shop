@@ -19,7 +19,7 @@ class Product(db.Model):
     __tablename__ = 'products'
 
     id = db.Column(db.Integer, primary_key=True)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=True)
     name = db.Column(db.String(200), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     picture = db.Column(db.String(255))
