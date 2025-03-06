@@ -8,11 +8,12 @@
 <body>
     <h2>Вхід до адмін-панелі</h2>
     <form method="post">
+        {{ form.hidden_tag() }}
         <label for="username">Логін:</label>
-        <input type="text" name="username" required>
+        {{ form.username }}
         <br>
         <label for="password">Пароль:</label>
-        <input type="password" name="password" required>
+        {{ form.password }}
         <br>
         <button type="submit">Увійти</button>
     </form>
