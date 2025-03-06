@@ -4,16 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Магазин</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .container { max-width: 1000px; margin: auto; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .products { display: flex; flex-wrap: wrap; gap: 20px; }
-        .product { border: 1px solid #ddd; padding: 10px; width: calc(50% - 10px); }
-        .product img { max-width: 100%; height: auto; }
-        .product h3 { margin: 10px 0; }
-        .links a { margin-left: 10px; text-decoration: none; color: blue; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 
@@ -29,7 +20,7 @@
     <div class="products">
         {% for product in products %}
         <div class="product">
-            <img src="{{ product.picture or '/static/nopicture.jpg' }}" alt="{{ product.name }}">
+            <img src="{{ product.picture or url_for('static', filename='nopicture.jpg') }}" alt="{{ product.name }}">
             <h3>{{ product.name }}</h3>
             <p>Ціна: {{ product.price }} грн</p>
         </div>
