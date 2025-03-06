@@ -38,6 +38,13 @@ admin.add_view(AdminModelView(Product, db.session))
 admin.add_view(AdminModelView(User, db.session))
 
 
+@app.route("/")
+def home():
+    """Головна сторінка: список товарів."""
+    products = Product.query.all()
+    return render_template("index.html", products=products)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
