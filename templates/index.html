@@ -13,6 +13,7 @@
         <h1>Магазин</h1>
         <div class="links">
             {% if current_user.is_authenticated %}
+                <span>Вітаю, {{ current_user.username }}!</span> |
                 <a href="{{ url_for('admin.index') }}">Адмінка</a> |
                 <a href="{{ url_for('logout') }}">Вийти</a>
             {% else %}

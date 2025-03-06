@@ -1,8 +1,9 @@
 from flask import Flask, redirect, url_for, request, render_template, flash
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.menu import MenuLink
 from flask_login import login_user, logout_user, current_user
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import Config
 from extensions import db, login_manager
@@ -24,7 +25,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # Захист адмін-панелі
-class AdminModelView(ModelView):
+class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):
         return current_user.is_authenticated
 
@@ -32,10 +33,11 @@ class AdminModelView(ModelView):
         return redirect(url_for("login", next=request.url))
 
 # Додаємо Flask-Admin
-admin = Admin(app, name="Адмінка магазину", template_mode="bootstrap4")
-admin.add_view(AdminModelView(Category, db.session))
-admin.add_view(AdminModelView(Product, db.session))
-admin.add_view(AdminModelView(User, db.session))
+admin = Admin(app, name="Адмінка", template_mode="bootstrap4", index_view=MyAdminIndexView())
+admin.add_link(MenuLink(name="🏠 Перейти до магазину", url="/"))
+admin.add_view(ModelView(Category, db.session))
+admin.add_view(ModelView(Product, db.session))
+admin.add_view(ModelView(User, db.session))
 
 
 @app.route("/")
