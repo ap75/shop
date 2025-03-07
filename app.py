@@ -1,9 +1,11 @@
 from flask import Flask, redirect, url_for, request, render_template, flash
 from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.form import Select2Widget
 from flask_admin.menu import MenuLink
 from flask_login import login_user, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from wtforms_sqlalchemy.fields import QuerySelectField
 
 from config import Config
 from extensions import db, login_manager
@@ -32,11 +34,25 @@ class MyAdminIndexView(AdminIndexView):
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for("login", next=request.url))
 
+
+class ProductAdmin(ModelView):
+    form_columns = ['name', 'price', 'picture', 'category_id', 'description']
+    form_overrides = {
+        'category_id': QuerySelectField
+    }
+    form_args = {
+        'category_id': {
+            'query_factory': lambda: Category.query.all(),
+            'get_label': 'name',
+            'allow_blank': False
+        }
+    }
+
 # Додаємо Flask-Admin
 admin = Admin(app, name="Адмінка", template_mode="bootstrap4", index_view=MyAdminIndexView())
 admin.add_link(MenuLink(name="🏠 Перейти до магазину", url="/"))
 admin.add_view(ModelView(Category, db.session))
-admin.add_view(ModelView(Product, db.session))
+admin.add_view(ProductAdmin(Product, db.session))
 admin.add_view(ModelView(User, db.session))
 
 
