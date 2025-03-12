@@ -1,11 +1,12 @@
 from flask import redirect, url_for
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
-from flask_admin.form import Select2Widget
+from flask_admin.form import Select2Widget, FileUploadField
 from flask_admin.menu import MenuLink
 from flask_login import current_user
 from wtforms_sqlalchemy.fields import QuerySelectField
 
+from config import Config
 from models import db, Category, Product, User
 
 
@@ -47,7 +48,8 @@ class ProductAdmin(AdminModelView):
     }
     form_columns = ['category', 'name', 'price', 'picture', 'description']
     form_overrides = {
-        'category': QuerySelectField
+        'category': QuerySelectField,
+        'picture': FileUploadField
     }
     form_args = {
         'category': {
@@ -55,6 +57,11 @@ class ProductAdmin(AdminModelView):
             'get_label': 'name',
             'allow_blank': False,
             "widget": Select2Widget()
+        },
+        'picture': {
+            'label': 'Зображення',
+            'base_path': Config.UPLOAD_FOLDER,
+            'allowed_extensions': {'png', 'jpg', 'jpeg', 'gif'}
         }
     }
 
