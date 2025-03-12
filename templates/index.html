@@ -29,6 +29,7 @@
             <img src="{{ url_for('static', filename=('uploads/' + product.picture) if product.picture else 'nopicture.jpg') }}" alt="{{ product.name }}">
             <h3>{{ product.name }}</h3>
             <p>Ціна: {{ product.price }} грн</p>
+            <a href="{{ url_for('product_detail', id=product.id) }}">Детальніше</a>
         </div>
         {% endfor %}
     </div>

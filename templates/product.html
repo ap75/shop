@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }}</title>
+</head>
+<body>
+    <h1>{{ product.name }}</h1>
+    <img src="{{ url_for('static', filename=('uploads/' + product.picture) if product.picture else 'nopicture.jpg') }}" alt="{{ product.name }}" style="max-width: 300px;">
+    <p><strong>Категорія:</strong> {{ product.category.name if product.category else 'Без категорії' }}</p>
+    <p><strong>Опис:</strong> {{ product.description or 'Опис не наданий' }}</p>
+    <p><strong>Ціна:</strong> {{ product.price }} грн</p>
+    <a href="{{ url_for('home') }}">Назад до магазину</a>
+</body>
+</html>

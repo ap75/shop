@@ -36,6 +36,12 @@ def home():
     return render_template("index.html", products=products)
 
 
+@app.route('/product/<int:id>')
+def product_detail(id):
+    product = Product.query.get_or_404(id)
+    return render_template('product.html', product=product)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
