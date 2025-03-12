@@ -1,13 +1,13 @@
 from flask import redirect, url_for
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
-from flask_admin.form import Select2Widget, FileUploadField
+from flask_admin.form import FileUploadField, Select2Widget
 from flask_admin.menu import MenuLink
 from flask_login import current_user
 from wtforms_sqlalchemy.fields import QuerySelectField
 
 from config import Config
-from models import db, Category, Product, User
+from models import Category, Product, User, db
 
 
 # Кастомна головна сторінка адмінки
@@ -29,7 +29,7 @@ class AdminModelView(ModelView):
 
 
 class UserAdmin(AdminModelView):
-    column_list = ('username',)
+    column_list = ("username",)
     column_labels = {"username": "Логін"}
     form_overrides = {}
 
@@ -40,29 +40,22 @@ class CategoryAdmin(AdminModelView):
 
 # Обираємо категорію для товару
 class ProductAdmin(AdminModelView):
-    column_list = ('category', 'name', 'price')
-    column_labels = {
-        "category": "Категорія",
-        "name": "Назва",
-        "price": "Ціна"
-    }
-    form_columns = ['category', 'name', 'price', 'picture', 'description']
-    form_overrides = {
-        'category': QuerySelectField,
-        'picture': FileUploadField
-    }
+    column_list = ("category", "name", "price")
+    column_labels = {"category": "Категорія", "name": "Назва", "price": "Ціна"}
+    form_columns = ["category", "name", "price", "picture", "description"]
+    form_overrides = {"category": QuerySelectField, "picture": FileUploadField}
     form_args = {
-        'category': {
-            'query_factory': lambda: Category.query.all(),
-            'get_label': 'name',
-            'allow_blank': False,
-            "widget": Select2Widget()
+        "category": {
+            "query_factory": lambda: Category.query.all(),
+            "get_label": "name",
+            "allow_blank": False,
+            "widget": Select2Widget(),
         },
-        'picture': {
-            'label': 'Зображення',
-            'base_path': Config.UPLOAD_FOLDER,
-            'allowed_extensions': {'png', 'jpg', 'jpeg', 'gif'}
-        }
+        "picture": {
+            "label": "Зображення",
+            "base_path": Config.UPLOAD_FOLDER,
+            "allowed_extensions": {"png", "jpg", "jpeg", "gif"},
+        },
     }
 
 

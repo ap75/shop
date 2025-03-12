@@ -1,18 +1,12 @@
-from flask import Flask, redirect, url_for, request, render_template, flash
-from flask_admin import Admin, AdminIndexView
-from flask_admin.contrib.sqla import ModelView
-from flask_admin.form import Select2Widget
-from flask_admin.menu import MenuLink
-from flask_login import login_user, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
-from wtforms_sqlalchemy.fields import QuerySelectField
+from flask import Flask, flash, redirect, render_template, url_for
+from flask_login import login_user, logout_user
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from admin import admin
 from config import Config
 from extensions import db, login_manager
-from forms import RegistrationForm, LoginForm
-from models import Category, Product, User
-
+from forms import LoginForm, RegistrationForm
+from models import Product, User
 
 # Створення Flask-додатку
 app = Flask(__name__)
@@ -22,6 +16,7 @@ app.config.from_object(Config)
 db.init_app(app)
 admin.init_app(app)
 login_manager.init_app(app)
+
 
 # Функція завантаження користувача
 @login_manager.user_loader
@@ -36,13 +31,13 @@ def home():
     return render_template("index.html", products=products)
 
 
-@app.route('/product/<int:id>')
+@app.route("/product/<int:id>")
 def product_detail(id):
     product = Product.query.get_or_404(id)
-    return render_template('product.html', product=product)
+    return render_template("product.html", product=product)
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm()
 
@@ -53,14 +48,14 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        flash('Регистрация прошла успешно!', 'success')
+        flash("Регистрация прошла успешно!", "success")
         login_user(user)
-        return redirect(url_for('admin.index'))
+        return redirect(url_for("admin.index"))
 
-    return render_template('register.html', form=form)
+    return render_template("register.html", form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
 
@@ -68,12 +63,13 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
-            flash('Успішний вхід!', 'success')
-            return redirect(url_for('admin.index'))
+            flash("Успішний вхід!", "success")
+            return redirect(url_for("admin.index"))
 
-        flash('Невірний логін або пароль', 'danger')
+        flash("Невірний логін або пароль", "danger")
 
-    return render_template('login.html', form=form)
+    return render_template("login.html", form=form)
+
 
 # Сторінка виходу
 @app.route("/logout")
