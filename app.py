@@ -7,6 +7,7 @@ from flask_login import login_user, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms_sqlalchemy.fields import QuerySelectField
 
+from admin import admin
 from config import Config
 from extensions import db, login_manager
 from forms import RegistrationForm, LoginForm
@@ -19,41 +20,13 @@ app.config.from_object(Config)
 
 # Ініціалізація розширень
 db.init_app(app)
+admin.init_app(app)
 login_manager.init_app(app)
 
 # Функція завантаження користувача
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
-# Захист адмін-панелі
-class MyAdminIndexView(AdminIndexView):
-    def is_accessible(self):
-        return current_user.is_authenticated
-
-    def inaccessible_callback(self, name, **kwargs):
-        return redirect(url_for("login", next=request.url))
-
-
-class ProductAdmin(ModelView):
-    form_columns = ['name', 'price', 'picture', 'category_id', 'description']
-    form_overrides = {
-        'category_id': QuerySelectField
-    }
-    form_args = {
-        'category_id': {
-            'query_factory': lambda: Category.query.all(),
-            'get_label': 'name',
-            'allow_blank': False
-        }
-    }
-
-# Додаємо Flask-Admin
-admin = Admin(app, name="Адмінка", template_mode="bootstrap4", index_view=MyAdminIndexView())
-admin.add_link(MenuLink(name="🏠 Перейти до магазину", url="/"))
-admin.add_view(ModelView(Category, db.session))
-admin.add_view(ProductAdmin(Product, db.session))
-admin.add_view(ModelView(User, db.session))
 
 
 @app.route("/")
