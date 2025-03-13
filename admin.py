@@ -29,9 +29,11 @@ class AdminModelView(ModelView):
 
 
 class UserAdmin(AdminModelView):
-    column_list = ("username",)
+    column_list = ["id", "username"]
     column_labels = {"username": "Логін"}
-    form_overrides = {}
+    can_edit = False  # Вимикаємо можливість редагування
+    can_create = False  # Вимикаємо можливість створення нових користувачів
+    can_view_details = True  # Дозволяємо перегляд користувача
 
 
 class CategoryAdmin(AdminModelView):
@@ -74,6 +76,6 @@ admin = Admin(
 admin.add_link(MenuLink(name="🏠 Перейти до магазину", url="/"))
 admin.add_link(MenuLink(name="🚪 Вийти", url="/logout"))
 # Додаємо моделі в адмінку
-admin.add_view(CategoryAdmin(Category, db.session))
-admin.add_view(ProductAdmin(Product, db.session))
-admin.add_view(UserAdmin(User, db.session))
+admin.add_view(CategoryAdmin(Category, db.session, name="Категорії"))
+admin.add_view(ProductAdmin(Product, db.session, name="Товари"))
+admin.add_view(UserAdmin(User, db.session, name="Користувачі"))
