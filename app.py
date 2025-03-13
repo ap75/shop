@@ -42,6 +42,12 @@ def register():
     form = RegistrationForm()
 
     if form.validate_on_submit():
+        # Перевіряємо, чи існує користувач з таким логіном
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash("Користувач з таким ім'ям вже існує!", "danger")
+            return redirect(url_for("register"))
+
         hashed_password = generate_password_hash(form.password.data)
         user = User(username=form.username.data, password=hashed_password)
 
@@ -75,7 +81,7 @@ def login():
 @app.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for("login"))
+    return redirect(url_for("home"))
 
 
 # Створення таблиць, якщо їх ще немає

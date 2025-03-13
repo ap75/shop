@@ -48,3 +48,64 @@ body {
     text-decoration: none;
     color: blue;
 }
+
+/* Окремий контейнер для форм (вхід/реєстрація), щоб не конфліктувати з основним контейнером */
+.form-container {
+    max-width: 600px;  /* менша ширина */
+    margin: 50px auto; /* відцентровано з відступом зверху */
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Стилі для елементів форми */
+.form-control {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+/* Стилі для кнопок */
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Стилі для flash-повідомлень */
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+/* Стилі для повідомлень про помилки */
+.error {
+    color: red;
+    font-size: 0.9em;
+}
