@@ -18,6 +18,11 @@ admin.init_app(app)
 login_manager.init_app(app)
 
 
+# Створення таблиць, якщо їх ще немає
+with app.app_context():
+    db.create_all()  # Створення таблиць
+
+
 # Функція завантаження користувача
 @login_manager.user_loader
 def load_user(user_id):
@@ -43,7 +48,9 @@ def register():
 
     if form.validate_on_submit():
         # Перевіряємо, чи існує користувач з таким логіном
-        existing_user = User.query.filter_by(username=form.username.data).first()
+        existing_user = User.query.filter_by(
+            username=form.username.data
+        ).first()
         if existing_user:
             flash("Користувач з таким ім'ям вже існує!", "danger")
             return redirect(url_for("register"))
@@ -54,7 +61,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        flash("Регистрация прошла успешно!", "success")
+        flash("Реєстрація пройшла успішно!", "success")
         login_user(user)
         return redirect(url_for("admin.index"))
 
@@ -82,11 +89,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("home"))
-
-
-# Створення таблиць, якщо їх ще немає
-with app.app_context():
-    db.create_all()  # Створення таблиць
 
 
 if __name__ == "__main__":

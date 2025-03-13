@@ -41,7 +41,12 @@ class CategoryAdmin(AdminModelView):
 # Обираємо категорію для товару
 class ProductAdmin(AdminModelView):
     column_list = ("category", "name", "price")
-    column_labels = {"category": "Категорія", "name": "Назва", "price": "Ціна"}
+    column_labels = {
+        "category": "Категорія",
+        "name": "Назва",
+        "price": "Ціна",
+        "description": "Опис товару",
+    }
     form_columns = ["category", "name", "price", "picture", "description"]
     form_overrides = {"category": QuerySelectField, "picture": FileUploadField}
     form_args = {
@@ -67,6 +72,7 @@ admin = Admin(
 )
 
 admin.add_link(MenuLink(name="🏠 Перейти до магазину", url="/"))
+admin.add_link(MenuLink(name="🚪 Вийти", url="/logout"))
 # Додаємо моделі в адмінку
 admin.add_view(CategoryAdmin(Category, db.session))
 admin.add_view(ProductAdmin(Product, db.session))
